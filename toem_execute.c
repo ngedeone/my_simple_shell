@@ -1,14 +1,5 @@
 #include "shell.h"
 
-/* Function prototypes */
-char *find_path(char *cmd, char **env);
-char **strtow(const char *str, const char *delims);
-void execute_child(info_t *info, char *path, char **args);
-void execute_parent(char *path, char **args);
-
-// ... (other functions)
-
-
 /**
  * execute_command - Execute the command entered by the user
  * @info: Pointer to the info_t structure
@@ -79,7 +70,7 @@ void execute_parent(char *path, char **args)
 	int status;
 	pid_t pid;
 
-	// Wait for the child process to finish
+	/* Wait for the child process to finish*/
 	pid = wait(&status);
 
 	if (pid == -1)
@@ -115,6 +106,4 @@ void execute_child(info_t *info, char *path, char **args)
 	ffree(args);
 	exit(EXIT_FAILURE);
 }
-
-// ... (rest of the functions)
 

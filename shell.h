@@ -50,6 +50,15 @@ void _exit_builtin(info_t *info);
 int _strlen(char *str);
 char *_strdup(const char *src);
 void free_info(info_t *info, int free_env);
+int _strncmp(const char *s1, const char *s2, size_t n);
+
+/* my_getline.c */
+void allocate_initial_buffer(char **lineptr, size_
+t *n);
+void reallocate_buffer(char **lineptr, size_t *n);
+ssize_t read_line(char **lineptr, size_t *n, FILE *stream);
+ssize_t my_getline(char **lineptr, size_t *n, FILE
+ *stream);
 
 #endif
 

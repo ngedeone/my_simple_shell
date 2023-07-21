@@ -34,3 +34,30 @@ void free_info(info_t *info, int free_env)
     }
 }
 
+/**
+ * _strncmp - Compare two strings up to n bytes
+ * @s1: The first string
+ * @s2: The second string
+ * @n: The maximum number of bytes to compare
+ *
+ * Return: 0 if strings are equal, < 0 if s1 < s2, > 0 if s1 > s2
+ */
+int _strncmp(const char *s1, const char *s2, size_t n)
+{
+    unsigned char c1, c2;
+
+    while (n--)
+    {
+        c1 = (unsigned char)*s1++;
+        c2 = (unsigned char)*s2++;
+
+        if (c1 != c2)
+            return (int)c1 - (int)c2;
+
+        if (c1 == '\0')
+            break;
+    }
+
+    return 0;
+}
+

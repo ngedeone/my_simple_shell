@@ -1,4 +1,4 @@
-#include "main.h"
+#include "shell.h"
 
 /*
  * Allocate the initial buffer for my_getline.

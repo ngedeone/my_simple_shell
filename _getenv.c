@@ -26,3 +26,12 @@ char *_getenv(char **env, const char *name)
 	return NULL;
 }
 
+/**
+ * writePrompt - Display the shell prompt
+ */
+void writePrompt(void)
+{
+	char prompt[] = "$ "; /* Shell prompt: "$ " */
+	write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
+}
+

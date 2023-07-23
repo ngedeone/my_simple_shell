@@ -22,7 +22,7 @@ void execute_command(info_t *info, char *line)
 	if (path)
 	{
 		/* Tokenize the command line to separate the command and arguments */
-		args = strtow(line, " \t\n");
+		args = split_string(line, " \t\n");
 
 		if (args)
 		{

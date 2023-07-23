@@ -21,14 +21,14 @@
     0, 0, 0}
 
 /**
- * struct passinfo - contains pseudo-arguments to pass into a function,
+ * struct info - contains pseudo-arguments to pass into a function,
  * allowing a uniform prototype for a function pointer struct
  * @arg: a string generated from getline containing arguments
  * @env: environment variables
  */
-typedef struct passinfo
+typedef struct info
 {
-    char *arg;
+    char **arg;
     char **env;
 } info_t;
 
@@ -39,6 +39,7 @@ ssize_t _getline(info_t *info, char **lineptr, size_t *n);
 void _puts(char *str);
 int _putchar(char c);
 char *_strcat(char *dest, const char *src);
+void ffree(char **arr);
 
 /* toem_execute.c */
 void execute_command(info_t *info, char *line);
@@ -69,6 +70,11 @@ static char *check_absolute_path(char *cmd);
 static char *search_executable_in_path(char *cmd, char **env);
 /* _getenv */
 char *_getenv(char **env, const char *name);
+
+/*my_strtok.c */
+char **split_string(char *str, char *delim);
+char **split_string_single_delim(char *str, char delim);
+int is_delim(char c, char *delim);
 
 #endif
 

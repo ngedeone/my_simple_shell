@@ -23,7 +23,7 @@ int main(int ac __attribute__((unused)), char **av __attribute__((unused)))
         }
 
         /* Read the input command line from the user */
-        if (getline(&line, &bufsize, stdin) == -1)
+        if (my_getline(&line, &bufsize, stdin) == -1)
         {
             if (int_mode)
                 putchar('\n');

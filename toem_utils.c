@@ -1,6 +1,6 @@
 #include "shell.h"
 
-int _strlen(char *str)
+size_t _strlen(const char *str)
 {
     int len = 0;
     while (str[len] != '\0')

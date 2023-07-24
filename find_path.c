@@ -10,15 +10,17 @@
 char *find_path(char *cmd, char **env)
 {
 	if (!cmd || !env)
-		return NULL;
+		return (NULL);
 
 	/* Check if the command is an absolute path */
 	char *path = check_absolute_path(cmd);
+
 	if (path)
-		return path;
+
+		return (path);
 
 	/* Search for the command in each path directory */
-	return search_executable_in_path(cmd, env);
+	return (search_executable_in_path(cmd, env));
 }
 
 /**
@@ -30,13 +32,15 @@ char *find_path(char *cmd, char **env)
 static char *check_absolute_path(char *cmd)
 {
 	if (!cmd)
-		return NULL;
+		return (NULL);
 
 	struct stat st;
-	if (cmd[0] == '/' && stat(cmd, &st) == 0 && S_ISREG(st.st_mode) && access(cmd, X_OK) == 0)
-		return _strdup(cmd);
 
-	return NULL;
+	if (cmd[0] == '/' && stat(cmd, &st) == 0 && S_ISREG(st.st_mode) &&
+access(cmd, X_OK) == 0)
+	return (_strdup(cmd));
+
+	return (NULL);
 }
 
 /**
@@ -49,8 +53,10 @@ static char *check_absolute_path(char *cmd)
 static char *search_executable_in_path(char *cmd, char **env)
 {
 	char *path = _getenv(env, "PATH");
+
 	if (!path)
-		return NULL;
+
+		return (NULL);
 
 	char *delims = ":";
 	char *token = strtok(path, delims);
@@ -65,7 +71,7 @@ static char *search_executable_in_path(char *cmd, char **env)
 		if (stat(tmp, &st) == 0 && S_ISREG(st.st_mode) && access(tmp, X_OK) == 0)
 		{
 			free(path);
-			return tmp;
+			return (tmp);
 		}
 
 		free(tmp);
@@ -73,6 +79,6 @@ static char *search_executable_in_path(char *cmd, char **env)
 	}
 
 	free(path);
-	return NULL;
+	return (NULL);
 }
 

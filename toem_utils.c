@@ -42,7 +42,7 @@ void free_info(info_t *info)
 	if (info->arg)
 		free(info->arg);
 
-	if (free_env && info->env)
+	if (free_info && info->env)
 	{
 		char **env = info->env;
 		int i = 0;
@@ -86,13 +86,14 @@ int _strncmp(const char *s1, const char *s2, size_t n)
 list_t *array_to_list(const char **array)
 {
         list_t *list = NULL;
+	int i;
 
         if (!array)
                 return NULL;
 
-	for (int i = 0; array[i] != NULL; i++)
+	while (int i = 0; array[i] != NULL; i++)
 	{
-		if (add_node_end(&list, strdup(array[i])) == NULL)
+		if (array_to_list(&list, strdup(array[i])) == NULL)
 			return NULL;
 	}
     

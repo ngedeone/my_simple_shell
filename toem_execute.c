@@ -107,17 +107,23 @@ void execute_parent(char *path, char **args)
  */
 void execute_child(char *path, char **args, char **env)
 {
-    char *const *envp = list_to_char_array(env);
+	list_t *env_list;
+	char *const *envp;
+	
+	env_list = array_to_list((const char **)env);
+	envp = list_to_char_array(env_list);
 
-    execve(path, args, envp);
+	execve(path, args, envp);
 
-    perror("execve");
+	perror("execve");
 
-    /* Free memory and exit the child process with a failure code */
-    free(path);
-    free(envp);
-    free_str_array(args);
-    exit(EXIT_FAILURE);
+	/* Free memory and exit the child process with a failure code */
+	free_str_array(envp);
+	free_list(env_list);
+	free(path);
+	free(envp);
+	free_str_array(args);
+	exit(EXIT_FAILURE);
 }
 
 /**
@@ -128,20 +134,24 @@ void execute_child(char *path, char **args, char **env)
  */
 char **list_to_char_array(const list_t *list)
 {
-    size_t count = 0;
-    const list_t *current = list;
-    while (current != NULL)
-    {
-        count++;
-        current = current->next;
-    }
+	char **result;
+	size_t i;
+	size_t count = 0;
+	const list_t *current;
+	
+	current = list;
+	while (current != NULL)
+	{
+		count++;
+		current = current->next;
+	}
 
-    char **result = malloc((count + 1) * sizeof(char *));
+    result = malloc((count + 1) * sizeof(char *));
     if (result == NULL)
         return NULL;
 
     current = list;
-    for (size_t i = 0; i < count; i++)
+    for (i = 0; i < count; i++)
     {
         result[i] = current->str;
         current = current->next;

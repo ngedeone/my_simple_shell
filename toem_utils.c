@@ -77,3 +77,24 @@ int _strncmp(const char *s1, const char *s2, size_t n)
     return 0;
 }
 
+/**
+ * array_to_list - Converts an array of strings to a linked list of strings.
+ * @array: The array of strings to convert.
+ *
+ * Return: A pointer to the head of the linked list, or NULL on failure.
+ */
+list_t *array_to_list(const char **array)
+{
+        list_t *list = NULL;
+
+        if (!array)
+                return NULL;
+
+	for (int i = 0; array[i] != NULL; i++)
+	{
+		if (add_node_end(&list, strdup(array[i])) == NULL)
+			return NULL;
+	}
+    
+	return list;
+}

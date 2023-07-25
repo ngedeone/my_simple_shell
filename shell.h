@@ -97,6 +97,7 @@ int _env(info_t *info);
 void _exit_builtin(info_t *info);
 
 /* toem_utils.c */
+list_t *array_to_list(const char **array);
 size_t _strlen(const char *str);
 char *_strdup(const char *src);
 void free_info(info_t *info);

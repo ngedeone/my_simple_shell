@@ -44,7 +44,7 @@ void free_info(info_t *info)
 
 	if (free_info && info->env)
 	{
-		char **env = info->env;
+		char **env = (char **)info->env;
 		int i = 0;
 		while (env[i])
 		{
@@ -86,12 +86,13 @@ int _strncmp(const char *s1, const char *s2, size_t n)
 list_t *array_to_list(const char **array)
 {
         list_t *list = NULL;
-	int i;
+	int i = 0;
 
         if (!array)
                 return NULL;
 
-	while (int i = 0; array[i] != NULL; i++)
+	while (array[i] != NULL) 
+		i++;
 	{
 		if (array_to_list(&list, strdup(array[i])) == NULL)
 			return NULL;

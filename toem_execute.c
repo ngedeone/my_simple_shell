@@ -1,60 +1,69 @@
 #include "shell.h"
 
 /**
- * execute_command - Execute the command entered by the user
- * @info: Pointer to the info_t structure
- * @line: The command line entered by the user
+ * execute_command - Function to execute the command
+ * @info: The passinfo structure containing shell information
  *
- * This function executes the command by forking a child process and calling
- * the appropriate functions to execute the command in the child and parent processes.
+ * Return: void
  */
-void execute_command(info_t *info, char *line)
+void execute_command(info_t *info)
 {
-	char *path = NULL;
-	char **args = NULL;
+    char *path = NULL;
+    char **args = NULL;
+    pid_t child_pid;
 
-	if (!line)
-		return;
+    /* Check if the command is provided */
+    if (!info || !info->arg)
+        return;
 
-	/* Find the executable path using PATH */
-	path = find_path(line, info->env);
+    /* Find the executable path using PATH */
+    path = find_path(info->arg, info->env);
 
-	if (path)
-	{
-		/* Tokenize the command line to separate the command and arguments */
-		args = split_string(line, " \t\n");
+    if (!path)
+    {
+        /* Command not found */
+        _puts("Command not found\n");
+        return;
+    }
 
-		if (args)
-		{
-			pid_t child_pid = fork();
+    /* Tokenize the command line to separate the command and arguments */
+    args = split_string(info->arg, " \t\n");
 
-			if (child_pid == -1)
-			{
-				/* Handle fork error */
-				perror("fork");
-			}
-			else if (child_pid == 0)
-			{
-				/* Child process */
-				execute_child(info, path, args);
-			}
-			else
-			{
-				/* Parent process */
-				execute_parent(path, args);
-			}
-		}
-		else
-		{
-			/* Handle memory allocation error */
-			perror("strtow");
-		}
-	}
-	else
-	{
-		/* Command not found */
-		_puts("Command not found\n");
-	}
+    if (!args)
+    {
+        /* Handle memory allocation error */
+        perror("strtow");
+        free(path); /* Don't forget to free the allocated memory */
+        return;
+    }
+
+    child_pid = fork();
+    if (child_pid == -1)
+    {
+        /* Handle fork error */
+        perror("fork");
+        free(path);
+        free_str_array(args);
+        return;
+    }
+
+    if (child_pid == 0)
+    {
+        /* Child process */
+        execute_child(path, args, info->environ);
+
+        /* If execve fails, we should exit the child process to avoid any unwanted behavior */
+        perror("execve");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        /* Parent process */
+        execute_parent(path, args);
+    }
+
+    free(path);
+    free_str_array(args);
 }
 
 /**
@@ -67,43 +76,87 @@ void execute_command(info_t *info, char *line)
  */
 void execute_parent(char *path, char **args)
 {
-	int status;
-	pid_t pid;
+    int status;
+    pid_t pid;
 
-	/* Wait for the child process to finish*/
-	pid = wait(&status);
+    /* Wait for the child process to finish */
+    pid = wait(&status);
 
-	if (pid == -1)
-	{
-		perror("wait");
-	}
-	else
-	{
-		/* Check if args is not NULL before freeing */
-		if (args)
-			ffree(args);
+    if (pid == -1)
+    {
+        perror("wait");
+    }
+    else
+    {
+        /* Check if args is not NULL before freeing */
+        if (args)
+            free_str_array(args);
 
-		/* Free memory after execution */
-		free(path);
-	}
+        /* Free memory after execution */
+        free(path);
+    }
 }
 
 /**
  * execute_child - Execute the command in the child process
- * @info: Pointer to the info_t structure
  * @path: The executable path of the command
  * @args: The arguments passed to the command
+ * @env: The environment variables passed to the command
  *
  * This function is called by the child process to execute the command using execve.
  */
-void execute_child(info_t *info, char *path, char **args)
+void execute_child(char *path, char **args, char **env)
 {
-	execve(path, args, info->env);
+	list_t *env_list;
+	char *const *envp;
+	
+	env_list = array_to_list((const char **)env);
+	envp = list_to_char_array(env_list);
+
+	execve(path, args, envp);
+
 	perror("execve");
 
-	/* Free memory and exit the child process with failure code */
+	/* Free memory and exit the child process with a failure code */
+	free_str_array(envp);
+	free_list(env_list);
 	free(path);
-	ffree(args);
+	free(envp);
+	free_str_array(args);
 	exit(EXIT_FAILURE);
+}
+
+/**
+ * list_to_char_array - Convert a list of strings to a char array
+ * @list: The list of strings
+ *
+ * Return: The char array containing the strings
+ */
+char **list_to_char_array(const list_t *list)
+{
+	char **result;
+	size_t i;
+	size_t count = 0;
+	const list_t *current;
+	
+	current = list;
+	while (current != NULL)
+	{
+		count++;
+		current = current->next;
+	}
+
+    result = malloc((count + 1) * sizeof(char *));
+    if (result == NULL)
+        return NULL;
+
+    current = list;
+    for (i = 0; i < count; i++)
+    {
+        result[i] = current->str;
+        current = current->next;
+    }
+    result[count] = NULL;
+    return result;
 }
 

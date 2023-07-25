@@ -16,7 +16,7 @@
 #define READ_BUF_SIZE 1024
 #define WRITE_BUF_SIZE 1024
 
-#define INFO_INIT {NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 0, NULL, 0, 0, 0}
+#define INFO_INIT {NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 0}
 
 /**
  * struct liststr - singli linked list
@@ -76,6 +76,7 @@ typedef struct passinfo
 } info_t;
 
 /* loophsh.c */
+void free_str_array(char **array);
 ssize_t _getline(info_t *info, char **lineptr, size_t *n);
 
 /* toem_errors.c */
@@ -85,9 +86,9 @@ char *_strcat(char *dest, const char *src);
 void ffree(char **arr);
 
 /* toem_execute.c */
-void execute_command(info_t *info, char *line);
+void execute_command(info_t *info);
 void execute_parent(char *path, char **args);
-void execute_child(info_t *info, char *path, char **args);
+void execute_child(char *path, char **args, char **env);
 
 /* toem_env_builtin.c */
 int _env(info_t *info);
@@ -96,9 +97,10 @@ int _env(info_t *info);
 void _exit_builtin(info_t *info);
 
 /* toem_utils.c */
+list_t *array_to_list(const char **array);
 size_t _strlen(const char *str);
 char *_strdup(const char *src);
-void free_info(info_t *info, int free_env);
+void free_info(info_t *info);
 int _strncmp(const char *s1, const char *s2, size_t n);
 
 /* my_getline.c */
@@ -108,11 +110,13 @@ ssize_t read_line(char **lineptr, size_t *n, FILE *stream);
 ssize_t my_getline(char **lineptr, size_t *n, FILE *stream);
 
 /* find_path */
-char *find_path(char *cmd, char **env);
-static char *check_absolute_path(char *cmd);
-static char *search_executable_in_path(char *cmd, char **env);
+char *find_path(char *cmd, list_t *env);
+char *check_absolute_path(char *cmd);
+char *search_executable_in_path(char *cmd, list_t *env);
+
 /* _getenv */
-char *_getenv(char **env, const char *name);
+char **list_to_char_array(const list_t *list);
+char *_getenv(list_t *env, const char *name);
 void writePrompt(void);
 
 /*my_strtok.c */

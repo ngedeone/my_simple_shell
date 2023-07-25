@@ -7,20 +7,21 @@
  *
  * Return: Pointer to the executable path, or NULL if not found
  */
-char *find_path(char *cmd, char **env)
+char *find_path(char *cmd, list_t *env)
 {
-	if (!cmd || !env)
-		return (NULL);
+    char *path;
 
-	/* Check if the command is an absolute path */
-	char *path = check_absolute_path(cmd);
+    if (!cmd || !env)
+        return (NULL);
 
-	if (path)
+    /* Check if the command is an absolute path */
+    path = check_absolute_path(cmd);
 
-		return (path);
+    if (path)
+        return (path);
 
-	/* Search for the command in each path directory */
-	return (search_executable_in_path(cmd, env));
+    /* Search for the command in each path directory */
+    return (search_executable_in_path(cmd, env));
 }
 
 /**
@@ -29,12 +30,12 @@ char *find_path(char *cmd, char **env)
  *
  * Return: Pointer to the executable path if found, NULL otherwise
  */
-static char *check_absolute_path(char *cmd)
+char *check_absolute_path(char *cmd)
 {
+	struct stat st;
+
 	if (!cmd)
 		return (NULL);
-
-	struct stat st;
 
 	if (cmd[0] == '/' && stat(cmd, &st) == 0 && S_ISREG(st.st_mode) &&
 access(cmd, X_OK) == 0)
@@ -50,18 +51,19 @@ access(cmd, X_OK) == 0)
  *
  * Return: Pointer to the executable path if found, NULL otherwise
  */
-static char *search_executable_in_path(char *cmd, char **env)
+char *search_executable_in_path(char *cmd, list_t *env)
 {
-	char *path = _getenv(env, "PATH");
-
-	if (!path)
-
-		return (NULL);
-
+	char *path = NULL;
 	char *delims = ":";
 	char *token = strtok(path, delims);
 	char *tmp = NULL;
 	struct stat st;
+
+	path = _getenv(env, "PATH");
+
+	if (!path)
+
+		return (NULL);
 
 	while (token)
 	{

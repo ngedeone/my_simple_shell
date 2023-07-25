@@ -7,23 +7,20 @@
  *
  * Return: Pointer to the value of the environment variable, or NULL if not found
  */
-char *_getenv(char **env, const char *name)
+char *_getenv(list_t *env, const char *name)
 {
-	size_t name_len = 0;
-	int i;
+    size_t name_len = _strlen(name);
+    list_t *current = env;
 
-	if (!env || !name)
-		return NULL;
+    while (current != NULL)
+    {
+        if (_strncmp(current->str, name, name_len) == 0 && current->str[name_len] == '=')
+            return &(current->str[name_len + 1]);
 
-	name_len = _strlen(name);
+        current = current->next;
+    }
 
-	for (i = 0; env[i] != NULL; i++)
-	{
-		if (_strncmp(env[i], name, name_len) == 0 && env[i][name_len] == '=')
-			return &(env[i][name_len + 1]);
-	}
-
-	return NULL;
+    return NULL;
 }
 
 /**

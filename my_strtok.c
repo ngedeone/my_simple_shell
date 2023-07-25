@@ -16,7 +16,7 @@ char **split_string(char *str, char *delim)
         return (NULL);
 
     if (delim == NULL || delim[0] == '\0')
-        delim = " \t\n"; // Default delimiters
+        delim = " \t\n"; /* Default delimiters */
 
     for (i = 0; str[i] != '\0'; i++)
     {

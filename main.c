@@ -34,7 +34,7 @@ int main(int ac __attribute__((unused)), char **av __attribute__((unused)))
         line[strcspn(line, "\n")] = '\0';
 
         /* Execute the command */
-        execute_command(&info, line);
+        execute_command(&info);
 
         /* Free allocated memory for the line */
         free(line);

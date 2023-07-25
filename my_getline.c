@@ -28,14 +28,16 @@ void allocate_initial_buffer(char **lineptr, size_t *n)
  */
 void reallocate_buffer(char **lineptr, size_t *n)
 {
-	free(*lineptr); // Free previously allocated memory
+	char *newLineptr;
+
+	free(*lineptr); /* Free previously allocated memory */
 
 	*n *= 2;
-	char *newLineptr = (char *)realloc(*lineptr, *n);
+	newLineptr = (char *)realloc(*lineptr, *n);
 	if (newLineptr == NULL)
 	{
 		perror("Error: Failed to reallocate memory");
-		exit(EXIT_FAILURE); // Handle memory reallocation error...
+		exit(EXIT_FAILURE); /* Handle memory reallocation error...*/
 	}
 	*lineptr = newLineptr;
 }
@@ -55,7 +57,7 @@ ssize_t read_line(char **lineptr, size_t *n, FILE *stream)
 
 	while ((c = fgetc(stream)) != EOF)
 	{
-		if (i >= *n - 2) // Perform bounds checking to prevent buffer overflow
+		if (i >= *n - 2) /* Perform bounds checking to prevent buffer overflow */
 		{
 			reallocate_buffer(lineptr, n);
 		}
@@ -84,6 +86,8 @@ ssize_t read_line(char **lineptr, size_t *n, FILE *stream)
  */
 ssize_t my_getline(char **lineptr, size_t *n, FILE *stream)
 {
+	ssize_t result;
+
 	if (lineptr == NULL || n == NULL || stream == NULL)
 	{
 		errno = EINVAL; /* Invalid arguments */
@@ -92,7 +96,7 @@ ssize_t my_getline(char **lineptr, size_t *n, FILE *stream)
 
 	allocate_initial_buffer(lineptr, n);
 
-	ssize_t result = read_line(lineptr, n, stream);
+	result = read_line(lineptr, n, stream);
 	if (result == 0 || result == -1)
 	{
 		perror("Error: Failed to read line");

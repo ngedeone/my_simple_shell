@@ -45,14 +45,16 @@ char *_strcat(char *dest, const char *src)
  */
 void ffree(char **arr)
 {
-    if (arr == NULL)
-        return;
+	int i;
 
-    for (int i = 0; arr[i] != NULL; i++)
-    {
-        free(arr[i]);
-    }
+	if (arr == NULL)
+		return;
 
-    free(arr);
+	for (i = 0; arr[i] != NULL; i++)
+	{
+		free(arr[i]);
+	}
+
+	free(arr);
 }
 

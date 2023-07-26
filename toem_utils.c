@@ -37,22 +37,25 @@ char *_strdup(const char *src)
  */
 void free_info(info_t *info)
 {
-	char *const *env = list_to_char_array(info->env);
+    if (info == NULL)
+        return;
 
-	if (info->arg)
-		free(info->arg);
+    /* Free the 'arg' member if it is allocated*/
+    if (info->arg)
+    {
+        free(info->arg);
+        info->arg = NULL; /* Set the pointer to NULL to avoid potential issues*/
+    }
 
-	if (free_info && info->env)
-	{
-		char **env = (char **)info->env;
-		int i = 0;
-		while (env[i])
-		{
-			free(env[i]);
-			i++;
-		}
-		free(env);
-	}
+    /* Free the 'env' member if it is allocated*/
+    if (info->env)
+    {
+        list_t *env_list = (list_t *)info->env;
+        free_list(env_list);
+        info->env = NULL; /* Set the pointer to NULL to avoid potential issues*/
+    }
+
+    free(info);
 }
 
 /**
@@ -78,25 +81,28 @@ int _strncmp(const char *s1, const char *s2, size_t n)
 }
 
 /**
- * array_to_list - Converts an array of strings to a linked list of strings.
+ * array_to_list - Converts an array of strings to a linked list.
  * @array: The array of strings to convert.
  *
- * Return: A pointer to the head of the linked list, or NULL on failure.
+ * Return: A pointer to the head of the created list.
  */
 list_t *array_to_list(const char **array)
 {
-        list_t *list = NULL;
-	int i = 0;
+	int i;
 
-        if (!array)
-                return NULL;
+    list_t *list = NULL;
 
-	while (array[i] != NULL) 
-		i++;
-	{
-		if (array_to_list(&list, strdup(array[i])) == NULL)
-			return NULL;
-	}
-    
-	return list;
+    if (!array)
+        return NULL;
+
+    for (i = 0; array[i] != NULL; i++)
+    {
+        if (add_node_end(&list, strdup(array[i])) == NULL)
+        {
+            free_list(list); /* Free the already created nodes in case of failure*/
+            return NULL;
+        }
+    }
+
+    return list;
 }

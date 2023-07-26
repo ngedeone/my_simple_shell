@@ -1,7 +1,7 @@
 #ifndef _SHELL_H_
 #define _SHELL_H_
 
-#include <string.h>
+#include <stddef.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <limits.h>
@@ -17,6 +17,8 @@
 #define WRITE_BUF_SIZE 1024
 
 #define INFO_INIT {NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 0}
+
+
 
 /**
  * struct liststr - singli linked list
@@ -76,6 +78,8 @@ typedef struct passinfo
 } info_t;
 
 /* loophsh.c */
+list_t *add_node_end(list_t **head, char *str);
+void free_list(list_t *list);
 void free_str_array(char **array);
 ssize_t _getline(info_t *info, char **lineptr, size_t *n);
 

@@ -98,32 +98,29 @@ void execute_parent(char *path, char **args)
 }
 
 /**
- * execute_child - Execute the command in the child process
- * @path: The executable path of the command
- * @args: The arguments passed to the command
- * @env: The environment variables passed to the command
- *
- * This function is called by the child process to execute the command using execve.
+ * execute_child - Executes the command in the child process.
+ * @path: The path to the command executable.
+ * @args: Array of command-line arguments.
+ * @env: Array of environment variables.
  */
 void execute_child(char *path, char **args, char **env)
 {
-	list_t *env_list;
-	char *const *envp;
-	
-	env_list = array_to_list((const char **)env);
-	envp = list_to_char_array(env_list);
+    list_t *env_list = NULL;
+    char **envp = NULL;
 
-	execve(path, args, envp);
+    env_list = array_to_list((const char **)env);
+    envp = list_to_char_array(env_list);
 
-	perror("execve");
+    perror("execve");
+    execve(path, args, envp);
+    perror("execve");
 
-	/* Free memory and exit the child process with a failure code */
-	free_str_array(envp);
-	free_list(env_list);
-	free(path);
-	free(envp);
-	free_str_array(args);
-	exit(EXIT_FAILURE);
+    /* Free memory and exit the child process with a failure code */
+    free_str_array(envp);
+    free_list(env_list);
+    free(path);
+    free_str_array(args);
+    exit(EXIT_FAILURE);
 }
 
 /**

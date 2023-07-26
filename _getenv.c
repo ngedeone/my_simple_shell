@@ -94,3 +94,27 @@ list_t *add_node_end(list_t **head, char *str)
 
     return new_node;
 }
+
+/**
+ * free_str_array - Frees an array of strings.
+ * @array: Pointer to the array of strings.
+ *
+ * Description: This function frees each string in the array and then frees the
+ * array itself.
+ */
+void free_str_array(char **array)
+{
+	size_t i;
+
+    if (array == NULL)
+        return;
+
+    for (i = 0; array[i] != NULL; i++)
+    {
+        free(array[i]);
+        array[i] = NULL;
+    }
+
+    free(array);
+}
+
